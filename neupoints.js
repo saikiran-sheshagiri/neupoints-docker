@@ -2,6 +2,7 @@
 
 var request = require('request');
 var program = require('commander');
+var q = require('q');
 
 program.version("1.0.0.0")
     .option('-i --init', 'Initialize the points system.')
@@ -9,24 +10,44 @@ program.version("1.0.0.0")
 
 if(program.init) {
     console.log("Initializing...");
-    Initialize();
+    initialize();
 }
 
-function Initialize() {
-    getHsmKeys();
+function initialize() {
+    createMockHsmKey()
+        .then(function(hsmKey) {
+            createAsset(hsmKey, "Points");
+        });
 };
 
-function createPointsAsset() {
+function createMockHsmKey() {
+    var deffered = q.defer();
+    getHsmKeys()
+        .then(function(hsmKeys) {
+            var hsmKey = null;
+            console.log(JSON.stringify(hsmKeys));
+            console.log(hsmKeys.length);
+            if(hsmKeys.length > 0) {
+                hsmKey = hsmKeys[0];
+            }
+
+            if(hsmKey === null) {
+                createKey("HSM1")
+                    .then(function(key) {
+                        hsmKey = key
+                    });
+            }
+            deffered.resolve(hsmKey);
+        });
+    return deffered.promise;
+}
+
+
+function createAsset(hsmKey, name) {
     console.log('Creating Asset Points');
 };
 
-function createMockHsm(hsmKeys) {
-    console.log(hsmKeys);
-    if(hsmKeys.length > 0) {
-        createPointsAsset(hsmKeys[0]);
-        return;
-    }
-
+function createKey(name) {
     var options = {
         url: 'http://localhost:1999/mockhsm/create-key',
         auth:{
@@ -42,23 +63,15 @@ function createMockHsm(hsmKeys) {
         })
     };
 
-    request.post(options, function(error, request, body) {
-        console.log('Creating MockHSM HSM1')
-        if(error) {
-            console.log(error);
-            console.log(body);
-        }
-        else {
-            console.log(body);
-            var hsmKey = JSON.parse(body);
-            if(hsmKey.code) {
-                console.log(hsmKey.message);
-            }
-            else {
-                createPointsAsset(hsmKey);
-            }
-        }
-    });
+    console.log("Creating HSM Key");
+
+    var deffered = q.defer();
+    post(options)
+        .then(function(data) {
+            console.log(data);
+            deffered.resolve(JSON.parse(data));
+        });
+    return deffered.promise;
 };
 
 function getHsmKeys() {
@@ -75,21 +88,26 @@ function getHsmKeys() {
         form: JSON.stringify({})
     };
 
+    var deffered = q.defer();
+    post(options)
+        .then(function(data){
+            console.log(data);
+            var result = JSON.parse(data);
+            deffered.resolve(result.items);
+        });
+    return deffered.promise;
+};
+
+function post(options) {
+    var deffered = q.defer();
     request.post(options, function(error, response, body) {
-        console.log('Requesting MockHSMs');
         if(error) {
             console.log(error);
-            console.log(body);
+            deferred.reject(error);
         }
-        else {
-            var hsmKeys = JSON.parse(body);
-            if(hsmKeys.code) {
-                console.log(hsmKeys.message);
-            }
-            else {
-                console.log('MockHSM found:' + JSON.stringify(hsmKeys.items));
-                createMockHsm(hsmKeys.items);
-            }
-        }
+
+        deffered.resolve(body);
     });
-};
+
+    return deffered.promise;
+}
