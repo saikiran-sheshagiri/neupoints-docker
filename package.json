@@ -6,8 +6,8 @@
   "author": "James Stackhouse",
   "main": "neupoints.js",
   "dependencies": {
-    "q": "^1.4.1",
     "commander": "^2.9.0",
-    "lodash": "^4.13.1"
+    "lodash": "^4.16.4",
+    "q": "^1.4.1"
   }
 }
