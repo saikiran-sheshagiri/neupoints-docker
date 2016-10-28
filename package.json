@@ -1,0 +1,13 @@
+{
+  "name": "neupoints",
+  "private": true,
+  "version": "0.0.1",
+  "description": "",
+  "author": "James Stackhouse",
+  "main": "neupoints.js",
+  "dependencies": {
+    "q": "^1.4.1",
+    "commander": "^2.9.0",
+    "lodash": "^4.13.1"
+  }
+}
