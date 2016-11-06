@@ -1,5 +1,5 @@
 # Neupoints
-POC for a loyality points application implemented on Chain Core [Chain Core] (https://chain.com/).
+POC for a loyality points application implemented on [Chain Core] (https://chain.com/).
 
 # Requirements
 * [Docker] (http://docker.com)
