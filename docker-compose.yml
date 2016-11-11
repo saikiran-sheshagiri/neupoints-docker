@@ -2,7 +2,7 @@ version: '2'
 services:
     deviceapi:
         container_name: "accounting-api"
-        build: ./src/accounting
+        build: ./contexts/accounting
         ports:
         - "8080:8080"
         environment:
@@ -13,11 +13,3 @@ services:
         image: chaincore/developer:latest
         ports:
         - "1999:1999"    
-    mongodb:
-        container_name: loyalty-mongo
-        image: mongo:latest
-        volumes:
-        - loyalty-data:/data/db
-volumes:
-    loyalty-data:
-        driver: local

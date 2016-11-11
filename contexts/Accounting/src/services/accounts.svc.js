@@ -1,4 +1,5 @@
 var Account = require('../models/account');
+var logger = require('../logger').getLogger('accounts.svc');
 var request = require('request');
 var _ = require('lodash');
 
@@ -24,9 +25,12 @@ var AccountsSvc = (function () {
         };
 
         return new Promise(function(resolve, reject) {
+            logger.debug('POST request');
+            logger.jsonp(options);
+
             request.post(options, function(error, response, body) {
                 if(error) {
-                    console.log(error);
+                    logger.error(error);
                     reject(error);
                 }
 
@@ -45,8 +49,11 @@ var AccountsSvc = (function () {
     };
 
     function list(data) {
-        console.log(data);
+        logger.debug(`Parsing list.`);
+        
         var result = JSON.parse(data);
+        logger.jsonp(result);
+
         return result.items;
     };
 
