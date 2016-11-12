@@ -1,7 +1,8 @@
-var Account = require('../models/account');
-var logger = require('../logger').getLogger('accounts.svc');
 var request = require('request');
 var _ = require('lodash');
+
+var logger = require('../logger').getLogger('accounts.svc');
+var config = require('../config');
 
 var AccountsSvc = (function () {
     function AccountsSvc() {
@@ -12,10 +13,10 @@ var AccountsSvc = (function () {
 
     function getAccounts(customerId) {
         var options = {
-            url: 'http://localhost:1999/list-accounts',
+            url: `${config.chainuri}/list-accounts`,
             auth:{
-                'user': 'client',
-                'pass': '1ea237229a3acf8b283e2930dcf1fd6c0f8397f0fb34c1f581b547938223b27b'
+                'user': process.env.CHAINCORE_ACCESS_TOKEN.split(':')[0],
+                'pass': process.env.CHAINCORE_ACCESS_TOKEN.split(':')[1]
             },
             headers: {
                 'accept': 'application/json',

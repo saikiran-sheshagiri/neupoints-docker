@@ -13,7 +13,8 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.set("port", process.env.PORT || 8080);
+logger.debug("Setting port " + process.env.ACCOUNTING_PORT);
+app.set("port", process.env.ACCOUNTING_PORT || 8080);
 
 process.on("uncaughtException", function (err) {
     logger.fatal(err.message, err.stack);
@@ -22,6 +23,7 @@ process.on("uncaughtException", function (err) {
 
 new routes_config.RoutesConfig(app);
 
+logger.debug("Starting server on port " + app.get("port"));
 var server = app.listen(app.get("port"));
 server.on("close", function (err) {
     logger.info("Application server closed " + err);

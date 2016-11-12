@@ -1,0 +1,39 @@
+version: '2'
+services:
+    accountapi:
+        image: accounting-api:debug
+        container_name: "dev-accounting-api"
+        build:
+            context: .
+            dockerfile: dockerfile.local
+        depends_on:
+            - chaincore
+        ports:
+            - "8080:8080"
+            - "5858:5858"
+        links:
+            - chaincore
+            - chaincore:127.0.0.1
+        environment:
+            - REMOTE_DEBUGGING
+            - NODE_ENV=development
+            - ACCOUNTING_PORT=8080
+            - CHAINCORE_ADDRESS=chaincore
+            - CHAINCORE_PORT=1999
+            - CHAINCORE_ACCESS_TOKEN=
+        volumes:
+            - dev-chain-log:/var/log/chain
+        command: bash /usr/src/app/wait-for-it.sh chaincore:1999 -- bash -c /usr/src/app/startup.sh
+    chaincore:
+        container_name: dev-accounting-chain
+        image: chaincore/developer:latest
+        volumes:
+            - dev-chain-data:/var/lib/postgresql/data
+            - dev-chain-log:/var/log/chain
+        ports:
+            - "1999:1999"
+volumes:
+    dev-chain-data:
+        driver: local
+    dev-chain-log:
+        driver: local

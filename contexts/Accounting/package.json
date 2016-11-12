@@ -10,13 +10,11 @@
     "test": "mocha"
   },
   "dependencies": {
-    "binary": "0.3.0",
     "body-parser": "1.15.2",
     "cors": "2.7.1",
     "express": "4.14.0",
     "lodash": "4.16.6",
     "log4js": "1.0.1",
-    "path": "0.12.7",
     "request": "2.72.0"
   },
   "devDependencies": {
