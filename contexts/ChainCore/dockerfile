@@ -1,8 +1,9 @@
 FROM chaincore/developer:latest
 
 COPY configure.sh /usr/bin/chain/configure.sh
+RUN dos2unix /usr/bin/chain/configure.sh
 RUN chmod +x /usr/bin/chain/configure.sh
 
-ENTRYPOINT /usr/bin/chain/configure.sh
+#ENTRYPOINT /usr/bin/chain/configure.sh
 
 EXPOSE 1999

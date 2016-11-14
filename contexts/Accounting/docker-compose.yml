@@ -25,13 +25,17 @@ services:
             - dev-chain-log:/var/log/chain
         command: bash /usr/src/app/wait-for-it.sh chaincore:1999 -- bash -c /usr/src/app/startup.sh
     chaincore:
+        image: chaincore-accounting:debug
         container_name: dev-accounting-chain
-        image: chaincore/developer:latest
+        build:
+            context: ../chaincore
+            dockerfile: dockerfile
         volumes:
             - dev-chain-data:/var/lib/postgresql/data
             - dev-chain-log:/var/log/chain
         ports:
             - "1999:1999"
+        entrypoint: /usr/bin/chain/configure.sh
 volumes:
     dev-chain-data:
         driver: local
