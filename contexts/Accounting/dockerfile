@@ -4,7 +4,9 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 
-RUN npm install
-
 RUN chmod +x /usr/src/app/wait-for-it.sh
 RUN chmod +x /usr/src/app/startup.sh
+
+RUN npm install
+
+EXPOSE 8080
