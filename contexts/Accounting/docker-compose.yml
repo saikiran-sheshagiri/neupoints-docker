@@ -23,7 +23,7 @@ services:
             - CHAINCORE_ACCESS_TOKEN=
         volumes:
             - dev-chain-log:/var/log/chain
-        command: bash /usr/src/app/wait-for-it.sh chaincore:1999 -- bash -c /usr/src/app/startup.sh
+        command: bash /usr/src/app/wait-for-it.sh chaincore:1999 -t 120 -- bash -c /usr/src/app/startup.sh
     chaincore:
         image: chaincore-accounting:debug
         container_name: dev-accounting-chain

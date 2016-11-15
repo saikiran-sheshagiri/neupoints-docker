@@ -3,8 +3,8 @@ log4js.configure('./src/config/log4js.json');
 
 function getLogger(categoryName) {
     var logger = log4js.getLogger(categoryName);
-    logger.jsonp = function(obj) {
-        logger.debug(`\n${JSON.stringify(obj, null, 4)}`);
+    logger.debugobj = function(msg, obj) {
+        logger.debug(`${msg}\n${JSON.stringify(obj, null, 4)}`);
     };
 
     return logger;
