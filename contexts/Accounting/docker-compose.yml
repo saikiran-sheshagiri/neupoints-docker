@@ -20,6 +20,7 @@ services:
             - ACCOUNTING_PORT=8080
             - CHAINCORE_ADDRESS=chaincore
             - CHAINCORE_PORT=1999
+            - CHAINCORE_KEY_NAME=HSM_Accounting_Dev
             - CHAINCORE_ACCESS_TOKEN=
         volumes:
             - dev-chain-log:/var/log/chain

@@ -4,7 +4,6 @@ var _ = require('lodash');
 var config = require('../config');
 var logger = require('../logger').getLogger('request.util');
 
-
 var RequestUtil = (function() {
     function RequestUtil() {
         return {
@@ -14,23 +13,23 @@ var RequestUtil = (function() {
         };
     };
 
-    function buildOptions(realitiveUri, form) {
-        if(!form) {
-            form = JSON.stringify({});
+    function buildOptions(realitiveUri, body) {
+        if(!body) {
+            body = {};
         }
 
-        return {
+        logger.debugobj(`options body:`, body);
+        var options = {
             url: `${config.chainuri}/` + realitiveUri,
             auth:{
                 'user': process.env.CHAINCORE_ACCESS_TOKEN.split(':')[0],
                 'pass': process.env.CHAINCORE_ACCESS_TOKEN.split(':')[1]
             },
-            headers: {
-                'accept': 'application/json',
-                'content-type': 'application/json'
-            },
-            form: form
+            body: body,
+            json: true
         };
+        logger.debugobj(`Built options:`, options);
+        return options;
     };
 
     function postListRequest(options, transform) {
@@ -45,7 +44,7 @@ var RequestUtil = (function() {
 
                 logger.debugobj("Body", body);
 
-                var result = JSON.parse(body);
+                var result = body;
                 if(body.code) {
                     reject(body);
                 }

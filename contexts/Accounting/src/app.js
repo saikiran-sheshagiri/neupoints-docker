@@ -18,6 +18,9 @@ app.use(bodyParser.json());
 logger.debug("Setting port " + process.env.ACCOUNTING_PORT);
 app.set("port", process.env.ACCOUNTING_PORT || 8080);
 
+var hsmKeyName = process.env.CHAINCORE_KEY_NAME;
+logger.debug(`Key name: ${hsmKeyName}`);
+
 process.on("uncaughtException", function (err) {
     logger.fatal(err.message, err.stack);
     process.exit(1);
@@ -29,7 +32,7 @@ function InitAsset(hsmKey) {
     svc.listAssets()
             .then(function(assets) {
                 logger.debugobj('Assets', assets);
-                var asset = _.find(assets, function(a) { return a === 'Points'});
+                var asset = _.find(assets, function(a) { return a.name === 'Points'});
                 if(!asset) {
                     logger.info('Points asset not found, creating the Points asset.');
                     svc.createAsset(hsmKey, 'Points')
@@ -42,6 +45,8 @@ function InitAsset(hsmKey) {
                             process.exit(3);
                         });
                 }
+
+                logger.debug('Initialization complete.')
             })
             .catch(function(error) {
                 logger.fatal(`There was an error retriving assets. ${error}`);
@@ -56,10 +61,10 @@ function InitKey() {
     svc.listHSMKeys()
         .then(function(keys) {
             logger.debugobj('HMS Keys', keys);
-            hsmKey = _.find(keys, function(key) { return key.name === 'HSM_Accounting_Dev'});
+            hsmKey = _.find(keys, function(key) { return key.name === hsmKeyName});
             if(!hsmKey) {
                 logger.info('No HSM key found creating new HSMKey:HSM_Accounting_Dev');
-                svc.createHSMKey('HSM_Accounting_Dev')
+                svc.createHSMKey(hsmKeyName)
                 .then(function(key) {
                     hsmKey = key;
                     logger.info('HSM Key created.');
@@ -80,7 +85,7 @@ function InitKey() {
         });
 };
 
-new routes_config.RoutesConfig(app);
+new routes_config.RoutesConfig(app, hsmKeyName);
 logger.debug("Starting server on port " + app.get("port"));
 var server = app.listen(app.get("port"));
 server.on("close", function (err) {

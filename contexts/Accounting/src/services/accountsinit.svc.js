@@ -26,7 +26,7 @@ var AccountsInitSvc = (function() {
 
     function createHSMKey(name) {
         logger.debug(`Creating HSM Key "${name}"`);
-        var options = req.buildOptions('mockhsm/create-key', JSON.stringify({ alias: name }));
+        var options = req.buildOptions('mockhsm/create-key', { alias: name });
         return req.postRequest(options, function(key) {
             return { 
                 name: key.alias,
@@ -47,13 +47,13 @@ var AccountsInitSvc = (function() {
 
     function createAsset(hsmKey, name) {
         logger.debug(`Creating Asset "${name}"`);
-        var options = req.buildOptions('create-asset', JSON.stringify([{ 
+        var options = req.buildOptions('create-asset', [{ 
             alias: name,
             root_xpubs: [hsmKey.xpub],
             quorum: 1,
             definition: {},
             tags: {}
-        }]));
+        }]);
         return req.postRequest(options, function(asset) {
             return { 
                 name: asset.alias

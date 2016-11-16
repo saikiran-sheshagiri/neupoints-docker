@@ -4,7 +4,6 @@ dockerfile*
 *docker-compose.yml
 
 # Directories
-old
 .vscode
 
 # Markdown and Log files
